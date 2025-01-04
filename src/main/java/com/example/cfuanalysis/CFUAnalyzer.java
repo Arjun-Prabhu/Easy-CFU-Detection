@@ -29,6 +29,7 @@ public class CFUAnalyzer extends Application {
     static WritableImage image;
     static BufferedImage bufferedImage;
     static Mat orgImage;
+    static Mat resized;
 
     public static void main(String[] args) {
         initializeImage();
@@ -37,17 +38,23 @@ public class CFUAnalyzer extends Application {
 
     public static void initializeImage() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        String input = "C:/Users/arjun/Downloads/Drawing-130.sketchpad.jpeg";
+        String input = "C:/Users/arjun/IdeaProjects/CFUAnalysis/src/main/java/com/example/assets/0 - uvc2.jpg";
         orgImage = Imgcodecs.imread(input);
 
+
+        resized = new Mat();
+        Imgproc.resize(orgImage,resized,new Size(),3,3);
+        Imgcodecs.imwrite("resized.jpg", resized);
+
+
         Mat grayImage = new Mat();
-        cvtColor(orgImage, grayImage, COLOR_RGB2GRAY);
+        cvtColor(resized, grayImage, COLOR_RGB2GRAY);
 
         Mat blurred = new Mat();
         GaussianBlur(grayImage,blurred,new Size(1,1),0);
 
         Mat binImage = new Mat();
-        threshold(blurred,binImage,115.75,255,THRESH_BINARY_INV);
+        threshold(blurred,binImage,119.75,255,THRESH_BINARY_INV);
 
         Mat detectedMat = detectCFUS(binImage);
         Imgcodecs.imwrite("completedAnalysis.jpg", detectedMat);
@@ -70,10 +77,10 @@ public class CFUAnalyzer extends Application {
         Mat hierarchy = new Mat();
         Imgproc.findContours(input, contours, hierarchy, Imgproc.RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-        System.out.println("Contours found: " + contours.size());
+        System.out.println("Contours found: " + (contours.size()-1));
 
         // Create an output image in BGR format to draw contours
-        Mat outputImage = orgImage.clone(); // Black background
+        Mat outputImage = resized.clone(); // Black background
 
         for (MatOfPoint contour : contours) {
             Rect boundingBox = Imgproc.boundingRect(contour);

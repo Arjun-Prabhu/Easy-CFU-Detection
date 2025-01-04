@@ -12,7 +12,7 @@ public class BlobDetection {
 
     public static void main(String[] args) {
         // Load the image
-        String imagePath = "C:/Users/arjun/Downloads/noDots.png"; // Replace with the path to your Petri dish image
+        String imagePath = "C:/Users/arjun/IdeaProjects/CFUAnalysis/src/main/java/com/example/assets/IMG_3451.jpeg"; // Replace with the path to your Petri dish image
         Mat src = Imgcodecs.imread(imagePath);
 
         if (src.empty()) {
